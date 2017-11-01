@@ -17,7 +17,7 @@ import math
 def get_best_shift(img):
   #ここでnanが出ることがある
   cy,cx = ndimage.measurements.center_of_mass(img)
-  print('{},{}'.format(cx,cy))
+  #print('{},{}'.format(cx,cy))
 
   rows,cols = img.shape
   shiftx = np.round(cols/2.0-cx).astype(int)
