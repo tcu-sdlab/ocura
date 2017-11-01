@@ -169,6 +169,8 @@ height = image.shape[0]
 width = image.shape[1]
 
 #画像を出力するためのフォルダを作成
+if not os.path.exists('recog_images'):
+  os.mkdir('recog_images')
 if not os.path.exists('recog_images/pro_img'):
   os.mkdir('recog_images/pro_img')
 if not os.path.exists('recog_images/pro_img/{}'.format(image_name)):
