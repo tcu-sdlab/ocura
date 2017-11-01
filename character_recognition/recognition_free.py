@@ -151,7 +151,7 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=["a
 #画像の読み込みと加工
 image_name = sys.argv[1]    #画像の名前
 image_format = sys.argv[2]  #画像のフォーマット
-image_url = "/".join(['test_images', image_name+'.'+image_format] )
+image_url = "/".join(['recog_images', 'test_images', image_name+'.'+image_format] )
 image = cv.imread(image_url,0)
 color_complete = image
 _, image = cv.threshold(255-image, 128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
