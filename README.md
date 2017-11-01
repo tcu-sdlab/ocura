@@ -1,5 +1,3 @@
-# ocura
-
 ## Requirements
 ### for General
 - python 2.7+ 
