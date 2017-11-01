@@ -1,0 +1,12 @@
+#images
+character_recognition/dataset_images/
+character_recognition/recog_images/
+create_image/ETL3/
+create_image/ETL6/
+create_image/images_ETL3/
+create_image/images_ETL6/
+
+#model
+*.npy
+*.h5
+*.json
