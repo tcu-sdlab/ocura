@@ -156,7 +156,6 @@ image = cv.imread(image_url,0)
 color_complete = image
 _, image = cv.threshold(255-image, 128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
 digit_image = -np.ones(image.shape)
-cv.imwrite("recog_images/pro_img/{0}/{0}_first.png".format(image_name), image)
 
 #認識結果を文字で表示するための配列
 char_arr = ['0','1','2','3','4','5','6','7','8','9','','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','+','-','*','/','%','=','space','#','$','^','?','back_slash',':',';',',','.','@','(',')','[',']','<','>']
