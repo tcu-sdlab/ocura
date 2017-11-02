@@ -220,11 +220,24 @@ for cropped_width in range(100/2, 300/2, 10):
                     bottom_right[1] -= 1
                     gray = np.delete(gray,-1,1)
 
+
+                if(gray.shape[0]<50 or gray.shape[1]<50):
+                  for (i, (br, tl)) in enumerate(zip(bottom_right, top_left)):
+                    pad_size = ((50-gray.shape[i])/2)
+                    bottom_right[i] += pad_size
+                    top_left[i] -= pad_size
+                    gray = np.lib.pad(gray,(pad_size,pad_size),'constant', constant_values=(0,0))
+
+
                 #既に文字が認識されている範囲であれば次の範囲へ
                 actual_w_h = bottom_right-top_left
                 if (np.count_nonzero(digit_image[top_left[0]:bottom_right[0],top_left[1]:bottom_right[1]]+1) >
-                            0.05*actual_w_h[0]*actual_w_h[1]):
+                            0.03*actual_w_h[0]*actual_w_h[1]):
                     continue
+
+                cv.imwrite("recog_images/pro_img/{}/crop/{}_{}_{}_{}_first_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y), gray_origin)
+
+                cv.imwrite("recog_images/pro_img/{}/crop/{}_{}_{}_{}_second_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y), gray)
 
                 #画像を28x28のサイズに成形する
                 gray = resize_in_28x(gray)
