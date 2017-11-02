@@ -133,7 +133,6 @@ def create_textfile(arr, num_arr):
   f.close()
   return
 
-
 np.random.seed(20171019)
 sess = tf.Session()
 
@@ -152,13 +151,14 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=["a
 image_name = sys.argv[1]    #画像の名前
 image_format = sys.argv[2]  #画像のフォーマット
 image_url = "/".join(['recog_images', 'test_images', image_name+'.'+image_format] )
+print(image_url)
 image = cv.imread(image_url,0)
 color_complete = image
 _, image = cv.threshold(255-image, 128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
 digit_image = -np.ones(image.shape)
 
 #認識結果を文字で表示するための配列
-char_arr = ['0','1','2','3','4','5','6','7','8','9','','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','+','-','*','/','%','=','space','#','$','^','?','back_slash',':',';',',','.','@','(',')','[',']','<','>']
+char_arr = ['0','1','2','3','4','5','6','7','8','9','','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','+','-','*','/','%','=','space','#','$','^','?','apostrophe',':',';',',','.','@','(',')','[',']','<','>']
 
 #認識結果を格納するための配列
 result_arr = []
@@ -197,6 +197,8 @@ for cropped_width in range(100/2, 300/2, 20/2):
                 #切り取った範囲の左上と右下の座標
                 top_left = np.array([shift_y, shift_x])
                 bottom_right = np.array([shift_y+cropped_height, shift_x + cropped_width])
+
+                gray_origin = gray
 
                 #文字の位置を特定
                 while np.sum(gray[0]) == 0:
