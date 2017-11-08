@@ -10,3 +10,4 @@ create_image/images_ETL6/
 *.npy
 *.h5
 *.json
+*.docs
