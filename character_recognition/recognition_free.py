@@ -178,19 +178,19 @@ if not os.path.exists('recog_images/pro_img/{}'.format(image_name)):
   os.mkdir('recog_images/pro_img/{}'.format(image_name))
 
 #画像内から文字が記述されている範囲を特定するためのループ
-for cropped_width in range(100/2, 300/2, 10):
-    for cropped_height in range(100/2, 300/2, 10):  #ここを固定にしたい
-        for shift_x in range(0, width-cropped_width, cropped_width/4):
-            for shift_y in range(0, height-cropped_height, cropped_height/4):
+for cropped_width in range(60, 120, 5):
+    for cropped_height in range(50, 120, 5):  #ここを固定にしたい
+        for shift_x in range(280, (width-280)-cropped_width, cropped_width/5):
+            for shift_y in range(230, (height-230)-cropped_height, cropped_height/5):
 
                 #特定のサイズに切り出す
-                gray = image[shift_y:shift_y+cropped_height,shift_x:shift_x + cropped_width]
+                gray = image[shift_y:shift_y+cropped_height, shift_x:shift_x+cropped_width]
 
                 if not os.path.exists('recog_images/pro_img/{}/crop'.format(image_name)):
                   os.mkdir('recog_images/pro_img/{}/crop'.format(image_name))
 
                 #色がついている部分がなければ次の範囲へ
-                if np.count_nonzero(gray) <= 40:
+                if np.count_nonzero(gray) <= 20:
                 	# print('continue1')
                 	continue
 
