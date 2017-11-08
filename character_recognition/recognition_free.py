@@ -153,6 +153,7 @@ image_format = sys.argv[2]  #画像のフォーマット
 image_url = "/".join(['recog_images', 'test_images', image_name+'.'+image_format] )
 print(image_url)
 image = cv.imread(image_url,0)
+image = cv.resize(image, (2000, 2830))
 color_complete = image
 _, image = cv.threshold(255-image, 128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
 digit_image = -np.ones(image.shape)
