@@ -249,9 +249,13 @@ for cropped_width in range(100/2, 300/2, 10):
                   cv.imwrite("recog_images/pro_img/{}/{}_{}_{}_{}_nan_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y), gray)
                 gray = shift(gray,shiftx,shifty)
 
+
+                if not os.path.exists('recog_images/pro_img/{}/shift'.format(image_name)):
+                  os.mkdir('recog_images/pro_img/{}/shift'.format(image_name))
+
                 #画像を書き出してからもう一度読み込み
                 #(シフト後の画像は2次元配列に入っているが3次元じゃないと文字認識ができない)
-                shifted_image_url = "recog_images/pro_img/{}/{}_{}_{}_{}_shifted_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y)
+                shifted_image_url = "recog_images/pro_img/{}/shift/{}_{}_{}_{}_shifted_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y)
                 cv.imwrite(shifted_image_url, gray)
                 image_tmp = cv.imread(shifted_image_url)
                 image_tmp = processing(image_tmp)
