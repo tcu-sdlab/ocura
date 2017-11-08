@@ -224,10 +224,11 @@ for cropped_width in range(60, 120, 5):
 
                 if(gray.shape[0]<50 or gray.shape[1]<50):
                   for (i, (br, tl)) in enumerate(zip(bottom_right, top_left)):
-                    pad_size = ((50-gray.shape[i])/2)
-                    bottom_right[i] += pad_size
-                    top_left[i] -= pad_size
-                    gray = np.lib.pad(gray,(pad_size,pad_size),'constant', constant_values=(0,0))
+                    if (gray.shape[i]<50):
+                      pad_size = ((50-gray.shape[i])/2)
+                      bottom_right[i] += pad_size
+                      top_left[i] -= pad_size
+                      gray = np.lib.pad(gray,(pad_size,pad_size),'constant', constant_values=(0,0))
 
 
                 #既に文字が認識されている範囲であれば次の範囲へ
