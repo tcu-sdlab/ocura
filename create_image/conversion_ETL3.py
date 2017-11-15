@@ -25,10 +25,6 @@ if __name__ == '__main__':
         print("Usage: python {} <in_file> <out_file>".format(sys.argv[0]))
         sys.exit(1)
         
-    in_file = open(sys.argv[1], 'rb')
-    out_file = open(sys.argv[2], 'wb+')
-
-    main(in_file, out_file)
-
-    in_file.close()
-    out_file.close()
+    with open(sys.argv[1], 'rb') as f_in:
+        with open(sys.argv[2], 'wb+') as f_out:
+            main(f_in, f_out)
