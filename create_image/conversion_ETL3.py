@@ -23,12 +23,12 @@ def main(in_file, out_file):
             data.append(b'\x00')
 
             for i in range(4):
-                a = int.from_bytes(data[i],'little')
-                b = int.from_bytes(data[i+1],'little')
+                a = int.from_bytes(data[i], 'little')
+                b = int.from_bytes(data[i+1], 'little')
 
-                d = ( (a<<(6-(i*2))) & int.from_bytes(bits[i],'little') ) | (b>>(i*2+2)) 
+                d = ((a<<(6-(i*2))) & int.from_bytes(bits[i], 'little')) | (b>>(i*2+2)) 
 
-                out_file.write(d.to_bytes(1,'little'))
+                out_file.write(d.to_bytes(1, 'little'))
 
         if not read_data:
             break
@@ -37,8 +37,8 @@ def main(in_file, out_file):
         out_file.write(read_data)
 
 if __name__ == '__main__':
-    in_file = open('ETL3/ETL3C_2','rb')  #change ETL3C_1 to ETL3C_2 in need
-    out_file = open('ETL3/ETL3C_2_converted','wb+')
+    in_file = open('ETL3/ETL3C_2', 'rb')  #change ETL3C_1 to ETL3C_2 in need
+    out_file = open('ETL3/ETL3C_2_converted', 'wb+')
 
     main(in_file, out_file)
 
