@@ -6,8 +6,6 @@ bits = [b'\x00',b'\x30',b'\x3c',b'\x3f']
 read_data = [b'\x00']
 
 while True:
-
-
     if not read_data:
         break
 
