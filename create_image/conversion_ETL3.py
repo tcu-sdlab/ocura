@@ -1,3 +1,4 @@
+ETL3_FILESIZE = 2736 + 216
 def main(in_file, out_file):
     masks = list(b'\x00\x30\x3c\x3f')
 
@@ -21,10 +22,16 @@ def main(in_file, out_file):
 
 if __name__ == '__main__':
     import sys
+    import os
     if len(sys.argv) != 3:
         print("Usage: python {} <in_file> <out_file>".format(sys.argv[0]))
         sys.exit(1)
-        
+
+    if os.stat(sys.argv[1]).st_size != ETL3_FILESIZE:
+        error_msg = "{} has invalid file size (except {} bytes)"
+        print(error_msg.format(sys.argv[1], ETL3_FILESIZE))
+        sys.exit(1)
+
     with open(sys.argv[1], 'rb') as f_in:
         with open(sys.argv[2], 'wb+') as f_out:
             main(f_in, f_out)
