@@ -1,6 +1,5 @@
 def main(in_file, out_file):
-    bits = [b'\x00', b'\x30', b'\x3c', b'\x3f']
-    bits = [int.from_bytes(i, 'little') for i in bits]
+    masks = list(b'\x00\x30\x3c\x3f')
 
     try:
         for num in range(73):  #72*3=216byte
@@ -8,8 +7,9 @@ def main(in_file, out_file):
             data.extend(in_file.read(3))
             data.append(0)
 
-            for lhs, mask, rhs in zip(data, bits, data[1:]):
-                d = ((lhs<<(6-(i*2))) & mask) | (rhs>>(i*2+2))
+            for lhs, mask, i, rhs in zip(data, masks, range(0, 8, 2), data[1:]):
+                # ((lhs << 6 - (i * 2 )) & mask | rhs >> (i * 2 + 2)
+                d = ((lhs<<(6 - i)) & mask) | (rhs>>(i + 2))
 
                 out_file.write(d.to_bytes(1, 'little'))
 
