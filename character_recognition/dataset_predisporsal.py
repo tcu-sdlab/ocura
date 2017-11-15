@@ -2,7 +2,7 @@ import os
 import numpy as np
 import cv2 as cv
 
-data_dir_path = "dataset_images/"
+data_dir_path = "dataset_images/old"
 tmp = os.listdir(data_dir_path)
 tmp=sorted([x for x in tmp if os.path.isdir(data_dir_path+x)])
 dir_list = tmp
