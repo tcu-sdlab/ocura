@@ -15,6 +15,7 @@ dir_list = tmp
 print(dir_list)
 
 for dir_name in dir_list:
+
     file_list = os.listdir(data_dir_path+dir_name)
     if not os.path.exists('dataset_images/new/{}/'.format(dir_name)):
         os.mkdir('dataset_images/new/{}'.format(dir_name))
