@@ -64,13 +64,13 @@ def recognition(model, image):
   max_score = 0
   answer_i = 0
 
-  for i in range(63):
+  for i in range(93):
     sample_target=np.array([i])
     score = model.evaluate(image, sample_target, verbose=0)
 
     if not char_arr[i]=='':
       percent=(16.12-score[0])/16.12*100  #確率を導出(損失の最大値がおおよそ16.12)
-      # print('{0} : {1:.2f}%'.format(char_arr[i], percent))
+      print('{0}({2}) : {1:.2f}%'.format(char_arr[i], percent, i))
 
     if percent>max_score:
       max_score = percent
@@ -87,7 +87,7 @@ def recognition(model, image):
 
   #認識結果と確率を四角の下に描画
   font = cv.FONT_HERSHEY_SIMPLEX
-  cv.putText(color_complete,str(pred),(top_left[1],bottom_right[0]+50),font,fontScale=1.4,color=(0,255,0),thickness=4)
+  cv.putText(color_complete,str('{}({})'.format(pred, answer_i)),(top_left[1],bottom_right[0]+50),font,fontScale=1.4,color=(0,255,0),thickness=4)
   cv.putText(color_complete,format(max_score,".2f")+"%",(top_left[1],bottom_right[0]+80),font,fontScale=0.8,color=(0,255,0),thickness=2)
 
   return pred
@@ -136,12 +136,14 @@ def create_textfile(arr, num_arr):
 np.random.seed(20171019)
 sess = tf.Session()
 
-#文字認識の学習データ
-X_test=np.load('character_data.npy')
-Y_target=np.load('character_label.npy')
+# #文字認識の学習データ
+# X_test=np.load('character_data.npy')
+# Y_target=np.load('character_label.npy')
 #学習したモデル
-model = model_from_json(open('character_recog_model.json').read())
-model.load_weights('character_recog_model.h5')
+model_url = os.path.join('model', 'new', 'character_recog_model_nist.json')
+weight_model_url = os.path.join('model', 'new', 'character_recog_model_nist.h5')
+model = model_from_json(open(model_url).read())
+model.load_weights(weight_model_url)
 #認識の準備
 init_learning_rate = 1e-2
 opt = SGD(lr=init_learning_rate, decay=0.0, momentum=0.9, nesterov=False)
@@ -159,7 +161,7 @@ _, image = cv.threshold(255-image, 128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
 digit_image = -np.ones(image.shape)
 
 #認識結果を文字で表示するための配列
-char_arr = ['0','1','2','3','4','5','6','7','8','9','','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','+','-','*','/','%','=','space','#','$','^','?','apostrophe',':',';',',','.','@','(',')','[',']','<','>']
+char_arr = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','','','','','+','-','*','/','%','=','space','#','$','^','?','apostrophe',':',';',',','.','@','(',')','[',']','<','>']
 
 #認識結果を格納するための配列
 result_arr = []
