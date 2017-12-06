@@ -196,7 +196,7 @@ for cropped_width in range(60, 120, 5):
                 	# print('continue1')
                 	continue
 
-                #桁を切り取って白い枠線が見つからない箇所があれば次の範囲へ
+                #文字らしきものが一番外のふちにあった場合は次の範囲へ
                 if (np.sum(gray[0]) != 0) or (np.sum(gray[:,0]) != 0) or (np.sum(gray[-1]) != 0) or (np.sum(gray[:,-1]) != 0):
                     continue
 
