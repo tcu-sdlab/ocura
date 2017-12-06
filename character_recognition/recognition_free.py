@@ -115,7 +115,8 @@ def sort_by_line(arr):
 
 
 def create_textfile(arr, num_arr):
-  f = open('recog_images/pro_img/{0}/{0}.txt'.format(image_name), 'w')
+  file_url = os.path.join('recog_images', 'pro_img', image_name, '{0}.txt'.format(image_name))
+  f = open(file_url, 'w')
 
   sum_value = 0
   for i in range(arr[len(arr)-1][5]+1):
@@ -152,7 +153,7 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=["a
 #画像の読み込みと加工
 image_name = sys.argv[1]    #画像の名前
 image_format = sys.argv[2]  #画像のフォーマット
-image_url = "/".join(['recog_images', 'test_images', image_name+'.'+image_format] )
+image_url = os.path.join('recog_images', 'test_images', image_name+'.'+image_format)
 print(image_url)
 image = cv.imread(image_url,0)
 image = cv.resize(image, (2000, 2830))
@@ -174,10 +175,11 @@ width = image.shape[1]
 #画像を出力するためのフォルダを作成
 if not os.path.exists('recog_images'):
   os.mkdir('recog_images')
-if not os.path.exists('recog_images/pro_img'):
-  os.mkdir('recog_images/pro_img')
-if not os.path.exists('recog_images/pro_img/{}'.format(image_name)):
-  os.mkdir('recog_images/pro_img/{}'.format(image_name))
+pro_img_folder_url = os.path.join('recog_images','pro_img')
+if not os.path.exists(pro_img_folder_url):
+  os.mkdir(pro_img_folder_url)
+if not os.path.exists(os.path.join(pro_img_folder_url, image_name)):
+  os.mkdir(os.path.join(pro_img_folder_url, image_name))
 
 #画像内から文字が記述されている範囲を特定するためのループ
 for cropped_width in range(60, 120, 5):
@@ -188,8 +190,9 @@ for cropped_width in range(60, 120, 5):
                 #特定のサイズに切り出す
                 gray = image[shift_y:shift_y+cropped_height, shift_x:shift_x+cropped_width]
 
-                if not os.path.exists('recog_images/pro_img/{}/crop'.format(image_name)):
-                  os.mkdir('recog_images/pro_img/{}/crop'.format(image_name))
+                crop_folder_url = os.path.join('recog_images', 'pro_img', image_name, 'crop')
+                if not os.path.exists(crop_folder_url):
+                  os.mkdir(crop_folder_url)
 
                 #色がついている部分がなければ次の範囲へ
                 if np.count_nonzero(gray) <= 20:
@@ -239,26 +242,24 @@ for cropped_width in range(60, 120, 5):
                             0.03*actual_w_h[0]*actual_w_h[1]):
                     continue
 
-                cv.imwrite("recog_images/pro_img/{}/crop/{}_{}_{}_{}_first_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y), gray_origin)
+                cv.imwrite(os.path.join(crop_folder_url,'{}_{}_{}_{}_first_image.png'.format(cropped_width,cropped_height,shift_x,shift_y)), gray_origin)
 
-                cv.imwrite("recog_images/pro_img/{}/crop/{}_{}_{}_{}_second_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y), gray)
+                cv.imwrite(os.path.join(crop_folder_url,'{}_{}_{}_{}_second_image.png'.format(cropped_width,cropped_height,shift_x,shift_y)), gray)
 
                 #画像を28x28のサイズに成形する
                 gray = resize_in_28x(gray)
 
                 #重心を使用してシフト
                 shiftx,shifty = get_best_shift(gray)
-                if math.isnan(shiftx):
-                  cv.imwrite("recog_images/pro_img/{}/{}_{}_{}_{}_nan_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y), gray)
-                gray = shift(gray,shiftx,shifty)
+                gray = shift(gray,shiftx, shifty)
 
-
-                if not os.path.exists('recog_images/pro_img/{}/shift'.format(image_name)):
-                  os.mkdir('recog_images/pro_img/{}/shift'.format(image_name))
+                shift_folder_url = os.path.join('recog_images', 'pro_img', image_name, 'shift')
+                if not os.path.exists(shift_folder_url):
+                  os.mkdir(shift_folder_url)
 
                 #画像を書き出してからもう一度読み込み
                 #(シフト後の画像は2次元配列に入っているが3次元じゃないと文字認識ができない)
-                shifted_image_url = "recog_images/pro_img/{}/shift/{}_{}_{}_{}_shifted_image.png".format(image_name,cropped_width,cropped_height,shift_x,shift_y)
+                shifted_image_url = os.path.join(shift_folder_url, '{}_{}_{}_{}_shifted_image.png'.format(cropped_width,cropped_height,shift_x,shift_y))
                 cv.imwrite(shifted_image_url, gray)
                 image_tmp = cv.imread(shifted_image_url)
                 image_tmp = processing(image_tmp)
@@ -273,7 +274,8 @@ for cropped_width in range(60, 120, 5):
                 result_arr.append([pred,shift_x,shift_y,bottom_right[1],bottom_right[0]])
 
 #画像を出力
-cv.imwrite("recog_images/pro_img/{0}/{0}_digitized_image.png".format(image_name), color_complete)
+digitized_image_url = os.path.join('recog_images', 'pro_img', image_name, '{0}_digitized_image.png'.format(image_name))
+cv.imwrite(digitized_image_url, color_complete)
 
 #結果を格納した配列を文字の座標で列ごとにソート
 sorted_arr = sort_by_line(result_arr)
