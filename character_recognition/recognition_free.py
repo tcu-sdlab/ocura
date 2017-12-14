@@ -185,10 +185,15 @@ def processing(image):
   return image
 
 
-def recognition(model, image):
+def recognition(model, image, digit_image, tl_br, color_complete):
   #学習データと比較して損失が最も少ないものを認識結果として出す
   max_score = 0
   answer_i = 0
+
+  #認識結果を文字で表示するための配列
+  char_arr = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','','','','','+','-','*','/','%','=','space','#','$','^','?','apostrophe',':',';',',','.','@','(',')','[',']','<','>']
+
+  top_left, bottom_right = tl_br
 
   for i in range(93):
     sample_target=np.array([i])
@@ -196,7 +201,7 @@ def recognition(model, image):
 
     if not char_arr[i]=='':
       percent=(16.12-score[0])/16.12*100  #確率を導出(損失の最大値がおおよそ16.12)
-      print('{0}({2}) : {1:.2f}%'.format(char_arr[i], percent, i))
+      print('{0} : {1:.2f}%'.format(char_arr[i], percent))
 
     if percent>max_score:
       max_score = percent
@@ -216,15 +221,17 @@ def recognition(model, image):
   cv.putText(color_complete,str('{}({})'.format(pred, answer_i)),(top_left[1],bottom_right[0]+50),font,fontScale=1.4,color=(0,255,0),thickness=4)
   cv.putText(color_complete,format(max_score,".2f")+"%",(top_left[1],bottom_right[0]+80),font,fontScale=0.8,color=(0,255,0),thickness=2)
 
-  return pred
+  return (pred, digit_image, color_complete)
 
 
-def recognition_free(image, digit_image, image_name):
+def recognition_free(image, digit_image, image_name, color_complete):
   #認識用のモデル
   model = preparing_model()
   #読み込んだ画像の高さと横幅
   height = image.shape[0]
   width = image.shape[1]
+  #認識結果を格納するための配列
+  result_arr = []
 
   #画像内から文字が記述されている範囲を特定するためのループ
   for cropped_width in range(60, 120, 5):
@@ -249,6 +256,7 @@ def recognition_free(image, digit_image, image_name):
 
           #余白を削る
           gray, top_left, bottom_right = delete_margin(gray, tl_br)
+          tl_br = (top_left, bottom_right)
 
           #画像が小さすぎる時に50pxまで補填
           gray = add_padding(gray, tl_br)
@@ -272,7 +280,7 @@ def recognition_free(image, digit_image, image_name):
           gray = export_and_import_image(image_name, gray, cwh_and_sxy)
 
           #認識結果
-          pred = recognition(model, gray)
+          pred, digit_image, color_complete = recognition(model, gray, digit_image, tl_br, color_complete)
           # print('our prediction is ... {}'.format(pred))
 
           #認識結果を配列に格納
@@ -306,6 +314,8 @@ def shift(image,sx,sy):
 
 
 def sort_by_line(arr):
+  line_num_arr = []
+
   arr = sorted(arr, key=lambda x:(x[2],x[1]))
   height_tmp = arr[0][4] - arr[0][2]
   y_tmp = arr[0][2]
@@ -321,7 +331,7 @@ def sort_by_line(arr):
     arr[i].append(line_num)
     line_num_arr.append(line_num)
 
-  arr = sorted(result_arr, key=lambda x:(x[5],x[1]))
+  arr = sorted(arr, key=lambda x:(x[5],x[1]))
 
   return (arr, line_num_arr)
 
@@ -333,15 +343,13 @@ def main():
   #画像を出力するためのフォルダを作成
   preparing_directories(image_name)
 
-  #認識結果を文字で表示するための配列
-  char_arr = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','','','','','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','','','','','+','-','*','/','%','=','space','#','$','^','?','apostrophe',':',';',',','.','@','(',')','[',']','<','>']
   #認識結果を格納するための配列
   result_arr = []
   #文字ごとの列を格納するための配列
   line_num_arr = []
 
   #文字の認識
-  result_arr = recognition_free(image, digit_image, image_name)
+  result_arr = recognition_free(image, digit_image, image_name, color_complete)
 
   #結果を格納した配列を文字の座標で列ごとにソート
   sorted_arr, line_num_arr = sort_by_line(result_arr)
