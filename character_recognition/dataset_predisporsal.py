@@ -4,9 +4,9 @@ import cv2 as cv
 import gc
 
 def get_dir_list():
-  data_dir_path = "dataset_images/new/"
+  data_dir_path = "dataset_images/lower/"
   dir_list = os.listdir(data_dir_path)
-  dir_list = sorted([x for x in tmp if os.path.isdir(data_dir_path+x)])
+  dir_list = sorted([x for x in dir_list if os.path.isdir(data_dir_path+x)])
 
   return (data_dir_path, dir_list)
 
@@ -63,10 +63,10 @@ def main():
     os.mkdir('npy_data')
 
   c_arr=np.array(c_class)
-  np.save('npy_data/character_label_new.npy',c_arr)
+  np.save('npy_data/character_label_lower.npy',c_arr)
 
   try:
-    np.save('npy_data/character_data_new.npy',X_target)
+    np.save('npy_data/character_data_lower.npy',X_target)
   except MemoryError as e:
     print(e)
 
