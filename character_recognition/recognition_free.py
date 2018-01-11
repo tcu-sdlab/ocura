@@ -13,6 +13,7 @@ import os
 from operator import itemgetter
 import math
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 def add_padding(image, tl_br):
   top_left, bottom_right = tl_br
@@ -20,7 +21,7 @@ def add_padding(image, tl_br):
   if(image.shape[0]<50 or image.shape[1]<50):
     for (i, (br, tl)) in enumerate(zip(bottom_right, top_left)):
       if (image.shape[i]<50):
-        pad_size = ((50-image.shape[i])/2)
+        pad_size = int((50-image.shape[i])/2)
         bottom_right[i] += pad_size
         top_left[i] -= pad_size
         image = np.lib.pad(image,(pad_size,pad_size),'constant', constant_values=(0,0))
@@ -218,7 +219,7 @@ def recognition(model, image, digit_image, tl_br, color_complete):
 
   #認識結果と確率を四角の下に描画
   font = cv.FONT_HERSHEY_SIMPLEX
-  cv.putText(color_complete,str('{}({})'.format(pred, answer_i)),(top_left[1],bottom_right[0]+50),font,fontScale=1.4,color=(0,255,0),thickness=4)
+  cv.putText(color_complete,str('{}'.format(pred)),(top_left[1],bottom_right[0]+50),font,fontScale=1.4,color=(0,255,0),thickness=4)
   cv.putText(color_complete,format(max_score,".2f")+"%",(top_left[1],bottom_right[0]+80),font,fontScale=0.8,color=(0,255,0),thickness=2)
 
   return (pred, digit_image, color_complete)
@@ -236,8 +237,8 @@ def recognition_free(image, digit_image, image_name, color_complete):
   #画像内から文字が記述されている範囲を特定するためのループ
   for cropped_width in range(60, 120, 5):
     for cropped_height in range(50, 120, 5):  #ここを固定にしたい
-      for shift_x in range(280, (width-280)-cropped_width, cropped_width/5):
-        for shift_y in range(230, (height-230)-cropped_height, cropped_height/5):
+      for shift_x in range(280, (width-280)-cropped_width, int(cropped_width/5)):
+        for shift_y in range(230, (height-230)-cropped_height, int(cropped_height/5)):
 
           cwh_and_sxy = (cropped_width, cropped_height, shift_x, shift_y)
 
@@ -292,7 +293,7 @@ def recognition_free(image, digit_image, image_name, color_complete):
 def resize_in_28x(image):
   rows,cols = image.shape
   compl_dif = abs(rows-cols)
-  half_Sm = compl_dif/2
+  half_Sm = int(compl_dif/2)
   half_Big = half_Sm if half_Sm*2 == compl_dif else half_Sm+1
   if rows > cols:
     image = np.lib.pad(image,((0,0),(half_Sm,half_Big)),'constant')
